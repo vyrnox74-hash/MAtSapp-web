@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#075E54" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="MAtSapp – Connect Beyond Limits. Messaging by MAT KAI STUDIOS / Mataaxion" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <title>MAtSapp</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- ===================== SPLASH ===================== -->
+  <div id="splash" class="screen active">
+    <div class="splash-content">
+      <div class="logo-mark" id="splash-logo">
+        <svg viewBox="0 0 100 100" width="96" height="96">
+          <circle cx="50" cy="50" r="48" fill="#25D366"/>
+          <path d="M30 55c0-12 9-22 20-22s20 10 20 22c0 4-1 8-3 11l5 12-13-4c-3 1-6 2-9 2-11 0-20-10-20-21z" fill="#fff"/>
+          <circle cx="40" cy="52" r="3.5" fill="#075E54"/>
+          <circle cx="50" cy="52" r="3.5" fill="#075E54"/>
+          <circle cx="60" cy="52" r="3.5" fill="#075E54"/>
+        </svg>
+      </div>
+      <h1>MAtSapp</h1>
+      <p class="tagline">Connect Beyond Limits</p>
+      <div class="splash-loader"></div>
+    </div>
+    <div class="splash-footer">
+      <span>by Mataaxion</span>
+    </div>
+  </div>
+
+  <!-- ===================== LOGIN / WELCOME ===================== -->
+  <div id="login-screen" class="screen">
+    <div class="login-header">
+      <div class="logo-mark small">
+        <svg viewBox="0 0 100 100" width="64" height="64">
+          <circle cx="50" cy="50" r="48" fill="#25D366"/>
+          <path d="M30 55c0-12 9-22 20-22s20 10 20 22c0 4-1 8-3 11l5 12-13-4c-3 1-6 2-9 2-11 0-20-10-20-21z" fill="#fff"/>
+          <circle cx="40" cy="52" r="3.5" fill="#075E54"/>
+          <circle cx="50" cy="52" r="3.5" fill="#075E54"/>
+          <circle cx="60" cy="52" r="3.5" fill="#075E54"/>
+        </svg>
+      </div>
+      <h1>Welcome to MAtSapp</h1>
+      <p>Enter your phone number to get started. You will receive a verification code.</p>
+    </div>
+
+    <div class="login-form">
+      <div class="phone-input-row">
+        <select id="country-code" class="country-select">
+          <option value="+256" selected>🇺🇬 +256</option>
+          <option value="+254">🇰🇪 +254</option>
+          <option value="+255">🇹🇿 +255</option>
+          <option value="+250">🇷🇼 +250</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+          <option value="+91">🇮🇳 +91</option>
+          <option value="+234">🇳🇬 +234</option>
+          <option value="+27">🇿🇦 +27</option>
+        </select>
+        <input type="tel" id="phone-input" placeholder="Phone number" maxlength="15" autocomplete="tel" />
+      </div>
+
+      <div id="otp-section" class="otp-section hidden">
+        <p class="otp-hint">Enter the 6-digit code sent to your phone</p>
+        <input type="text" id="otp-input" placeholder="••••••" maxlength="6" inputmode="numeric" />
+      </div>
+
+      <button id="btn-continue" class="btn-primary">Continue</button>
+      <p class="login-note">By continuing you agree to MAtSapp’s Terms & Privacy Policy.</p>
+      <p style="text-align:center;font-size:11px;color:#25D366;margin-top:12px;">Login v3 – No SMS required • Code: 123456</p>
+    </div>
+
+    <div class="login-footer">
+      <span>by Mataaxion</span>
+    </div>
+  </div>
+
+  <!-- ===================== PROFILE SETUP (first time) ===================== -->
+  <div id="profile-setup" class="screen">
+    <div class="setup-header">
+      <h2>Profile info</h2>
+      <p>Please provide your name and an optional profile photo</p>
+    </div>
+    <div class="setup-body">
+      <div class="avatar-picker" id="avatar-picker">
+        <div class="avatar-circle" id="avatar-preview">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <span class="camera-badge">📷</span>
+        <input type="file" id="avatar-file" accept="image/*" hidden />
+      </div>
+      <input type="text" id="display-name" placeholder="Your name" maxlength="30" />
+      <button id="btn-finish-setup" class="btn-primary">Next</button>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN APP SHELL ===================== -->
+  <div id="app" class="screen">
+    <!-- Top App Bar -->
+    <header class="app-bar" id="app-bar">
+      <div class="app-bar-title" id="app-bar-title">MAtSapp</div>
+      <div class="app-bar-actions">
+        <button class="icon-btn" id="btn-camera" title="Camera">📷</button>
+        <button class="icon-btn" id="btn-search" title="Search">🔍</button>
+        <button class="icon-btn" id="btn-menu" title="Menu">⋮</button>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs" id="main-tabs">
+      <button class="tab active" data-tab="chats">Chats</button>
+      <button class="tab" data-tab="updates">Updates</button>
+      <button class="tab" data-tab="communities">Communities</button>
+      <button class="tab" data-tab="calls">Calls</button>
+    </nav>
+
+    <!-- Tab Contents -->
+    <main class="tab-content">
+      <!-- CHATS -->
+      <section id="tab-chats" class="tab-pane active">
+        <div class="search-bar hidden" id="chat-search-bar">
+          <input type="search" id="chat-search" placeholder="Search or start new chat" />
+        </div>
+        <div class="chat-list" id="chat-list">
+          <!-- populated by JS -->
+        </div>
+        <button class="fab" id="fab-new-chat" title="New chat">💬</button>
+      </section>
+
+      <!-- UPDATES (Status) -->
+      <section id="tab-updates" class="tab-pane">
+        <div class="status-section">
+          <div class="my-status" id="my-status">
+            <div class="status-avatar ring">
+              <span class="plus">+</span>
+            </div>
+            <div>
+              <strong>My status</strong>
+              <p>Tap to add status update</p>
+            </div>
+          </div>
+          <h3 class="section-label">Recent updates</h3>
+          <div id="status-list"></div>
+        </div>
+        <button class="fab" id="fab-new-status" title="New status">📷</button>
+      </section>
+
+      <!-- COMMUNITIES -->
+      <section id="tab-communities" class="tab-pane">
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>Stay connected with a community</h3>
+          <p>Communities bring members together in topic-based groups. Any community you're added to will appear here.</p>
+          <button class="btn-outline" id="btn-new-community">Start your community</button>
+        </div>
+        <div id="communities-list" class="hidden"></div>
+      </section>
+
+      <!-- CALLS -->
+      <section id="tab-calls" class="tab-pane">
+        <div class="empty-state">
+          <div class="empty-icon">📞</div>
+          <h3>Make calls easily</h3>
+          <p>Call friends and family for free over the internet with MAtSapp.</p>
+        </div>
+        <div id="calls-list"></div>
+        <button class="fab" id="fab-new-call" title="New call">📞</button>
+      </section>
+    </main>
+
+    <!-- Overflow Menu -->
+    <div class="menu-dropdown hidden" id="overflow-menu">
+      <button data-action="new-group">New group</button>
+      <button data-action="new-broadcast">New broadcast</button>
+      <button data-action="linked-devices">Linked devices</button>
+      <button data-action="starred">Starred messages</button>
+      <button data-action="settings">Settings</button>
+      <button data-action="admin" id="menu-admin" class="hidden">Admin Panel</button>
+    </div>
+  </div>
+
+  <!-- ===================== CHAT DETAIL ===================== -->
+  <div id="chat-detail" class="screen">
+    <header class="chat-header">
+      <button class="icon-btn back" id="btn-back-chat">←</button>
+      <div class="chat-header-info" id="chat-header-info">
+        <div class="avatar small" id="chat-avatar">A</div>
+        <div>
+          <strong id="chat-title">Contact</strong>
+          <small id="chat-subtitle">online</small>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="icon-btn">📹</button>
+        <button class="icon-btn">📞</button>
+        <button class="icon-btn">⋮</button>
+      </div>
+    </header>
+
+    <div class="messages" id="messages">
+      <!-- messages injected here -->
+    </div>
+
+    <div class="composer">
+      <button class="icon-btn" id="btn-emoji">😊</button>
+      <input type="text" id="message-input" placeholder="Message" autocomplete="off" />
+      <button class="icon-btn" id="btn-attach">📎</button>
+      <button class="icon-btn send" id="btn-send">➤</button>
+    </div>
+  </div>
+
+  <!-- ===================== NEW CHAT / CONTACTS ===================== -->
+  <div id="new-chat" class="screen">
+    <header class="app-bar">
+      <button class="icon-btn back" id="btn-back-newchat">←</button>
+      <div class="app-bar-title">Select contact</div>
+      <button class="icon-btn" id="btn-search-contacts">🔍</button>
+    </header>
+    <div class="new-chat-actions">
+      <button class="list-action" id="btn-new-group-from-contacts">
+        <span class="action-icon">👥</span> New group
+      </button>
+      <button class="list-action" id="btn-new-contact">
+        <span class="action-icon">👤+</span> New contact
+      </button>
+    </div>
+    <div class="contact-list" id="contact-list"></div>
+  </div>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <div id="settings" class="screen">
+    <header class="app-bar">
+      <button class="icon-btn back" id="btn-back-settings">←</button>
+      <div class="app-bar-title">Settings</div>
+    </header>
+    <div class="settings-profile" id="settings-profile">
+      <div class="avatar large" id="settings-avatar">U</div>
+      <div>
+        <strong id="settings-name">User</strong>
+        <p id="settings-status">Hey there! I am using MAtSapp.</p>
+      </div>
+    </div>
+    <div class="settings-list">
+      <button class="settings-item"><span>🔑</span> Account</button>
+      <button class="settings-item"><span>🔒</span> Privacy</button>
+      <button class="settings-item"><span>💬</span> Chats</button>
+      <button class="settings-item"><span>🔔</span> Notifications</button>
+      <button class="settings-item"><span>💾</span> Storage and data</button>
+      <button class="settings-item" id="btn-clear-cache"><span>🗑️</span> Clear cache</button>
+      <button class="settings-item"><span>❓</span> Help</button>
+      <button class="settings-item" id="btn-logout"><span>🚪</span> Log out</button>
+    </div>
+    <div class="settings-footer">
+      <p>MAtSapp from MAT KAI STUDIOS</p>
+      <p class="watermark">by Mataaxion</p>
+    </div>
+  </div>
+
+  <!-- ===================== MATAAX AI ===================== -->
+  <div id="mataax-ai" class="screen">
+    <header class="app-bar ai-header">
+      <button class="icon-btn back" id="btn-back-ai">←</button>
+      <div class="app-bar-title">Mataax AI</div>
+    </header>
+    <div class="ai-messages" id="ai-messages">
+      <div class="ai-welcome">
+        <div class="ai-logo">✦</div>
+        <h2>Mataax AI</h2>
+        <p>Your intelligent assistant inside MAtSapp. Ask anything.</p>
+      </div>
+    </div>
+    <div class="composer">
+      <input type="text" id="ai-input" placeholder="Ask Mataax AI..." />
+      <button class="icon-btn send" id="btn-ai-send">➤</button>
+    </div>
+  </div>
+
+  <!-- ===================== ADMIN PANEL ===================== -->
+  <div id="admin-panel" class="screen">
+    <header class="app-bar">
+      <button class="icon-btn back" id="btn-back-admin">←</button>
+      <div class="app-bar-title">Admin Panel</div>
+    </header>
+    <div class="admin-body">
+      <h3>App Configuration</h3>
+      <label>App Name <input type="text" id="admin-app-name" value="MAtSapp" /></label>
+      <label>Tagline <input type="text" id="admin-tagline" value="Connect Beyond Limits" /></label>
+      <label>Welcome Message <textarea id="admin-welcome"></textarea></label>
+      <label>Maintenance Mode
+        <select id="admin-maintenance">
+          <option value="false">Off</option>
+          <option value="true">On</option>
+        </select>
+      </label>
+      <button class="btn-primary" id="btn-save-admin">Save Configuration</button>
+      <hr />
+      <h3>Broadcast Announcement</h3>
+      <textarea id="admin-broadcast" placeholder="Message to all users..."></textarea>
+      <button class="btn-primary" id="btn-broadcast">Send Broadcast</button>
+      <p class="admin-note">Changes are stored in the database and applied to all clients without redeploying code.</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.warn);
+    }
+  </script>
+</body>
+</html>
